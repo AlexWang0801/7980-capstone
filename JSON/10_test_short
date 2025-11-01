@@ -1,0 +1,590 @@
+[
+  {
+    "id": 1,
+    "email": "Hey Damilola,  \n\nNurse shortages and heavy workloads make it harder for teams to give timely care. Chasing providers or waiting for callbacks only adds delays and stress for everyone involved.  \n\nTigerConnect removes that wait by routing messages instantly to the right provider. It helps nurses connect fast, so patients are cared for sooner and staff feel less pressure.  \n\nIs improving this kind of communication a focus for you right now? We could set up a call to discuss how it might work at Detroit Medical Center.  \n\nBest Regards,  \nAyobami  \nTigerConnect  ",
+    "recipient_data": {
+      "Recipient's Career Summary": "CEO at DMC International, LLC.",
+      "Recipient's Company Information": "Founded in 1886, Detroit Medical Center is a regional health care system that provides clinical care, research and medical education. They are based in Detroit, Michigan. Works in the Hospital & Health Care industry. Size of the company is 10001. Company is based in Detroit, Michigan, United States.",
+      "Recipient": "Damilola Carter",
+      "Recipient Company Name": "Detroit Medical Center",
+      "Recipient's Job Title": "Chief Executive Officer",
+      "Sender's Name": "Ayobami",
+      "Sender's Company": "TigerConnect",
+      "Value Proposition of Sender's Company": "TigerConnect eliminates phone tag with real-time messaging and role-based routing, ensuring nurses quickly reach the right provider—saving time, reducing stress, and improving patient care.",
+      "About Sender Company": "TigerConnect is healthcare’s most widely adopted communication platform – uniquely modernizing care collaboration among doctors, nurses, care teams, and patients. TigerConnect is the only solution that combines a consumer-like user experience for both clinical and patient communication with serious security, privacy, and clinical workflow requirements that today’s healthcare organizations demand. TigerConnect accelerates productivity, reduces costs, and improves patient outcomes.\n\nTrusted by more than 7,000 healthcare organizations, TigerConnect maintains 99.99% verifiable uptime and processes more than 10 million messages each day. To learn more about TigerConnect, visit tigerconnect.com.",
+      "Problem Solved by Sender's Company": "Nurse shortages and inadequate staffing ratios are pushing nurses to their limits. Wasting time tracking down providers and playing phone tag only adds to their frustration and delays patient care.",
+      "Persona": "Owner/Admin"
+    }
+  },
+  {
+    "id": 2,
+    "email": "Hi Lubaina,  \n\nSaw recent interest in content around targeted advertising and account-based strategies. It seems you may be digging into ways to drive stronger campaign performance.  \n\nIt’s hard to act on anonymous site visits when you can’t tailor the message or re-engage them later.  \n\nDemandbase shows which companies visit your site and adapts the experience in real time. That means deeper engagement and less wasted spend.  \n\nOpen to a 15-min chat to see if this is worth your time?  ",
+    "recipient_data": {
+      "Prospect's work history": [
+        {
+          "title": "Digital Marketing Manager",
+          "company_name": "NRG Energy Inc.",
+          "is_current_position": true
+        },
+        {
+          "company_name": "NRG Energy Inc.",
+          "is_current_position": true
+        },
+        {
+          "title": "Sales Associate",
+          "company_name": "Vivaldi Stone",
+          "is_current_position": false,
+          "start_date": "March 2014",
+          "end_date": "September 2014"
+        },
+        {
+          "title": "Sr. Analyst, Digital Communications",
+          "company_name": "NRG Energy",
+          "is_current_position": false,
+          "start_date": "November 2021",
+          "end_date": "March 2024"
+        },
+        {
+          "title": "Digital Marketing Analyst",
+          "company_name": "Direct Energy",
+          "is_current_position": false,
+          "start_date": "June 2019",
+          "end_date": "March 2024"
+        },
+        {
+          "title": "Sponsorship And Grassroots Coordinator",
+          "company_name": "Direct Energy",
+          "is_current_position": false,
+          "start_date": "January 2017",
+          "end_date": "June 2019"
+        },
+        {
+          "title": "Teacher",
+          "company_name": "Foundations Academy",
+          "is_current_position": false,
+          "start_date": "January 2015",
+          "end_date": "August 2015"
+        }
+      ],
+      "CRM fields taken from Prospect's contact or company information": [
+        {
+          "from": "account",
+          "value": "Energy and Environmental",
+          "source": "account",
+          "name": "Industry",
+          "label": "Industry",
+          "description": "What industry are they in?"
+        },
+        {
+          "from": "contact",
+          "value": "https://linkedin.com/in/lubainamunis",
+          "source": "contact",
+          "name": "LinkedIn_Profile__c",
+          "label": "LinkedIn Profile"
+        },
+        {
+          "from": "account",
+          "value": 66,
+          "source": "account",
+          "name": "engagio__pipeline_predict_score__c",
+          "label": "Pipeline Predict Score"
+        },
+        {
+          "from": "account",
+          "value": 80,
+          "source": "account",
+          "name": "engagio__EngagedPeople__c",
+          "label": "Engaged People"
+        },
+        {
+          "from": "account",
+          "value": 36,
+          "source": "account",
+          "name": "engagio__qualification_score__c",
+          "label": "Qualification Score"
+        },
+        {
+          "from": "account",
+          "value": 67,
+          "source": "account",
+          "name": "engagio__WebVisitsLast3Months__c",
+          "label": "Web Traffic (3 mo.)"
+        },
+        {
+          "from": "account",
+          "value": "predictive analytics;targeted advertising;ad tech;account based;abm",
+          "source": "account",
+          "name": "Top_5_Intent_Keywords_Pick_LIst__c",
+          "label": "Top 5 Intent Keywords Pick List"
+        },
+        {
+          "from": "account",
+          "value": "demandbase.com/why-demandbase/6sense",
+          "source": "account",
+          "name": "High_Value_Page_Visits_3_mo__c",
+          "label": "High Value Page Visits (3 mo.)",
+          "description": "High Value page visits identified by Demandbase."
+        }
+      ],
+      "Research Data on the Recipient and/or Recipient's Company": "{}",
+      "Recipient": "Lubaina Munis",
+      "Recipient Company Name": "NRG Energy Inc.",
+      "Recipient's Job Title": "Digital Marketing Manager",
+      "Sender's Name": "John",
+      "Sender's Company": "Demandbase",
+      "Sender's Job Title": "SDR",
+      "Value Proposition of Sender's Company": "Demandbase reveals which companies are on your site and dynamically personalizes the experience, driving deeper engagement and conversion.",
+      "Problem Solved by Sender's Company": "Website visits are anonymous, and you can’t personalize content or retarget effectively.",
+      "Persona": "Digital Marketing Manager",
+      "DISC Profile": [
+        "High Steadiness",
+        "High Dominance"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "email": "Hey Daniel,  \n\nLegacy BI tools often block true collaboration. They make it harder to work fluidly across teams.  \n\nThat slows down projects, creates rework, and limits insights you can share. It can feel like the tools are working against you. How often does that get in the way of your analysis?  \n\nWith Hex, your team can run queries, build reports, and share dashboards all in one tool—cutting costs and speeding delivery.  \n\nWant to explore if this could work for you?  \n\nBest Regards,  \nctracy  ",
+    "recipient_data": {
+      "Prospect's work history": [
+        {
+          "title": "Data Analyst",
+          "company_name": "Crossmark",
+          "is_current_position": true
+        },
+        {
+          "title": "Data Analyst",
+          "company_name": "Crossmark",
+          "is_current_position": true,
+          "start_date": "2015-06-01"
+        },
+        {
+          "title": "Retail Merchandiser",
+          "company_name": "Acosta",
+          "is_current_position": false,
+          "start_date": "2014-06-01",
+          "end_date": "2015-05-01"
+        },
+        {
+          "title": "Retail Merchandiser",
+          "company_name": "Crossmark",
+          "is_current_position": false,
+          "start_date": "2013-04-01",
+          "end_date": "2014-05-01"
+        },
+        {
+          "title": "Customer Service Representative",
+          "company_name": "Pathmark Stores, Inc.",
+          "is_current_position": false,
+          "start_date": "2006-07-01",
+          "end_date": "2013-03-01"
+        }
+      ],
+      "Recipient": "Daniel Pajenski",
+      "Recipient Company Name": "Crossmark",
+      "Recipient's Job Title": "Data Analyst",
+      "Sender's Name": "ctracy@hex.tech",
+      "Sender's Company": "Hex",
+      "Value Proposition of Sender's Company": "Data teams can work faster with Hex by consolidating data science, analysis, dashboards, reports, and spreadsheets into one collaborative toolset. This can reduce the organization's spend on data tooling.",
+      "About Sender Company": "Hex is changing how people use data by building a collaborative, shareable analytics workspace. We empower our users to ask new questions and share their findings in one product without any friction. Go end-to-end from quick queries to deep-dive analyses to beautiful interactive data apps – all in one collaborative, AI-powered workspace.",
+      "Problem Solved by Sender's Company": "Legacy BI tools lack scalability and collaboration features, hindering engagement with business partners.",
+      "DISC Profile": [
+        "High Calculativeness"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "email": "Hey Kathy,  \n\nManaging vehicles for store deliveries can be stressful when accidents happen. It can mean lost time, higher insurance costs, and time spent sorting out what really happened.  \n\nSureCam helps businesses see what’s going on behind the wheel, prove fault in accidents, and protect drivers from false claims. That means fewer headaches and less time tied up in disputes.  \n\nIs reducing accident costs and liability something you’re looking at now? When’s a good time this week for us to connect?  \n\nBest Regards,  \njordan  \nSureCam  ",
+    "recipient_data": {
+      "Prospect's work history": [
+        {
+          "title": "Store Manager",
+          "company_name": "Hollywood Feed",
+          "is_current_position": true
+        },
+        {
+          "title": "Store Manager",
+          "company_name": "Hollywood Feed",
+          "is_current_position": true,
+          "start_date": "2019-06-01"
+        }
+      ],
+      "Recipient": "Kathy Killy",
+      "Recipient Company Name": "Hollywood Feed",
+      "Recipient's Job Title": "Store Manager",
+      "Sender's Name": "jordan",
+      "Sender's Calendar URL": "jteimer@surecam.com",
+      "Sender's Company": "SureCam",
+      "Sender's Job Title": "sales exec",
+      "Value Proposition of Sender's Company": "SureCam's fleet video solution helps exonerate drivers, lower accident-related costs, and powers proactive risk management.",
+      "Problem Solved by Sender's Company": "High fleet accident costs, commercial auto insurance rate increase pressure, unclear fleet accident root causes.",
+      "DISC Profile": [
+        "High Steadiness",
+        "High Dominance"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "email": "Hey David,  \n\nRight now, some PE sponsors are seeing equipment projects slow when banks drag on approvals.  \n\nThat can push timelines back and tie up cash you’d rather put into higher-return opportunities. Have you run into that with portfolio upgrades?  \n\nFNCC recently financed $1.8M for a PE-backed healthcare provider through a covenant-free, off-balance-sheet sale‑leaseback—freeing capital to redeploy across core investments without taking on traditional debt.  \n\nWould it help to review options that protect cash flow while scaling?  \n\nBest Regards,  ",
+    "recipient_data": {
+      "Prospect's work history": [
+        {
+          "title": "Partner",
+          "company_name": "Everberg Capital",
+          "is_current_position": true
+        },
+        {
+          "company_name": "Everberg Capital",
+          "is_current_position": true
+        },
+        {
+          "title": "Partner",
+          "company_name": "Pine Island Capital Partners",
+          "is_current_position": false,
+          "start_date": "2018",
+          "end_date": "January 2020"
+        },
+        {
+          "title": "Co-Founder, Private Capital Investing",
+          "company_name": "Goldman Sachs",
+          "is_current_position": false,
+          "start_date": "2004",
+          "end_date": "January 2013"
+        },
+        {
+          "title": "Board Member",
+          "company_name": "InVeris Training Solutions",
+          "is_current_position": false,
+          "start_date": "2020",
+          "end_date": "2020"
+        },
+        {
+          "title": "Managing Director",
+          "company_name": "Macquarie Group",
+          "is_current_position": false,
+          "start_date": "2013",
+          "end_date": "2018"
+        },
+        {
+          "title": "Board Of Directors",
+          "company_name": "ECi Software Solutions",
+          "is_current_position": false,
+          "start_date": "2012",
+          "end_date": "2013"
+        },
+        {
+          "title": "Board Of Directors",
+          "company_name": "Datapipe",
+          "is_current_position": false,
+          "start_date": "2012",
+          "end_date": "2013"
+        },
+        {
+          "title": "Board Of Directors",
+          "company_name": "Broadway Media",
+          "is_current_position": false,
+          "start_date": "2009",
+          "end_date": "2013"
+        },
+        {
+          "title": "Board",
+          "company_name": "LifeLock",
+          "is_current_position": false,
+          "start_date": "2010",
+          "end_date": "2012"
+        },
+        {
+          "title": "Asst Trader",
+          "company_name": "Susquehanna International Group",
+          "is_current_position": false,
+          "start_date": "2004",
+          "end_date": "2004"
+        },
+        {
+          "title": "Analyst",
+          "company_name": "McNeil Consumer & Specialty Pharmaceuticals",
+          "is_current_position": false,
+          "start_date": "2003",
+          "end_date": "2003"
+        }
+      ],
+      "Recipient": "David Horowitz",
+      "Recipient Company Name": "Everberg Capital",
+      "Recipient's Job Title": "Partner",
+      "Sender's Name": "Chris",
+      "Sender's Company": "First National Capital Corporation",
+      "Sender's Job Title": "Sales",
+      "Value Proposition of Sender's Company": "FNCC provided a $1.8 million covenant-free, off-balance-sheet sale-leaseback for a PE-backed healthcare provider—unlocking working capital to redeploy across other core investments.",
+      "About Sender Company": "Going beyond the limitations of traditional lending to get your deal done. Nearly $4B in equipment, technology, and project funding for mid-sized and large companies and growing.",
+      "Problem Solved by Sender's Company": "Balancing cash across multiple portfolio companies can force sponsors to tap emergency reserves or dilute stakes—eroding returns on your top performers.",
+      "Persona": "PE Sponsor",
+      "DISC Profile": [
+        "Medium Calculativeness"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "email": "Hey Gunho,  \n\nQii.ai has been building in the software space for over a decade.  \nI mostly work with founders like you to tackle challenges in finding strong DevOps and SecOps talent, while keeping costs under control.  \n\nWithout solving this, ops teams can burn time and budget on constant firefighting instead of growth priorities.  \n\nWould it make sense to compare notes on how others handle this?  \n\nThanks,  \nJames  ",
+    "recipient_data": {
+      "Recipient's Company Information": "Works in the Computer Software industry. Size of the company is 31. Company was founded in 2014.",
+      "Recipient": "Gunho Sohn",
+      "Recipient Company Name": "Qii.ai",
+      "Recipient's Job Title": "Co-founder",
+      "Sender's Name": "James Solada",
+      "Sender's Company": "DuploCloud",
+      "Sender's Job Title": "Marketing",
+      "Value Proposition of Sender's Company": "Trouble finding quality DevOps and SecOps engineers, not to mention costs spiraling out of control.",
+      "About Sender Company": "DuploCloud offers an end-to-end DevOps software platform for dev teams that don’t have dedicated DevOps engineers and augments those that do. The platform automates the provisioning of your application to the cloud (AWS, GCP, Azure), integrating cloud ops, DevOps, and security/compliance with 24x7 monitoring and support. The software runs in your cloud account and is accessed thru our UI, Terraform or API.",
+      "Problem Solved by Sender's Company": "Have a partner you can trust while still owning your own operations.",
+      "DISC Profile": [
+        "High Calculativeness",
+        "Medium Steadiness"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "email": "Hey Kamil,  \n\nRunning performance campaigns can mean paying for clicks from accounts not ready to buy.  \n\nThat can waste budget and make results harder to prove, while putting pressure on every decision. How do you make sure your ads only reach in-market accounts?  \n\nINFUSE + HG Insights uses IT spend, intent, technographic, and renewal data to target only active buyers. This helps campaigns drive real engagement without wasted spend.  \n\nWould you be open to a quick call to explore this?  \n\nBest Regards,  \nToni  \nINFUSE  ",
+    "recipient_data": {
+      "Prospect's work history": [
+        {
+          "title": "Senior Performance Marketing Specialist",
+          "company_name": "Future Processing",
+          "is_current_position": true
+        },
+        {
+          "title": "Senior Performance Marketing Specialist",
+          "company_name": "Future Processing",
+          "description": "",
+          "location": "",
+          "is_current_position": true,
+          "start_date": "20249",
+          "end_date": "00"
+        },
+        {
+          "title": "Performance Marketing Specialist ",
+          "company_name": "Future Processing",
+          "description": "",
+          "location": "",
+          "is_current_position": true,
+          "start_date": "202211",
+          "end_date": "20249"
+        },
+        {
+          "title": "Digital specialist",
+          "company_name": ".bringMore advertising",
+          "description": "",
+          "location": "",
+          "is_current_position": false,
+          "start_date": "20213",
+          "end_date": "202210"
+        },
+        {
+          "title": "Junior Social Media Executive",
+          "company_name": ".bringMore advertising",
+          "description": "",
+          "location": "Chorzów, woj. śląskie, Polska",
+          "is_current_position": false,
+          "start_date": "20197",
+          "end_date": "20213"
+        },
+        {
+          "title": "Social Media Assistant",
+          "company_name": ".bringMore advertising",
+          "description": "",
+          "location": "Chorzów, woj. śląskie, Polska",
+          "is_current_position": false,
+          "start_date": "20188",
+          "end_date": "20197"
+        }
+      ],
+      "Recipient": "Kamil Sandak",
+      "Recipient Company Name": "Future Processing",
+      "Recipient's Job Title": "Senior Performance Marketing Specialist",
+      "Sender's Name": "Toni",
+      "Sender's Company": "INFUSE",
+      "Sender's Job Title": "SDR Team Lead",
+      "Value Proposition of Sender's Company": "INFUSE + HG Insights enables data-driven targeting using IT spend, intent, technographic data and contract renewal data (where available), so your performance campaigns only hit in-market accounts.",
+      "About Sender Company": "Multiple-time Inc. 5000 honoree, INFUSE is a fully integrated, data-fueled, demand generation engine that offers a host of industry-leading solutions designed to help B2B organizations drive qualified interest. We employ a holistic, omni-channel approach, which empowers us to identify, qualify, and produce actionable engagement. Supported by the latest innovations in digital marketing, we generate leads by strategically promoting content through innovative social, targeted display, mobile, and direct outreach campaigns.",
+      "Problem Solved by Sender's Company": "Wasting paid media budget on accounts that aren’t ready to buy.",
+      "Persona": "Brand/Digital/Performance - HG",
+      "DISC Profile": [
+        "High Calculativeness",
+        "High Steadiness"
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "email": "Hi Stephanie,  \n\nIn your role as Financial Controller at Paytronix, you’re likely tracking ARR, expansion revenue, churn, and operating expenses to guide decisions.  \n\nExcel offers flexibility, but it can create version issues, broken links, and slow collaboration across teams. That can delay real-time insights needed for agility in fast-changing markets.  \n\nVena keeps Excel’s familiar interface but adds automation, security, and SaaS-specific templates for subscription revenue planning. Sprout Social, Nutanix, and Thomas International use it to speed reporting and improve forecast accuracy.  \n\nWould it make sense to explore this for your team?  \n\nThanks,  \nKirsten  ",
+    "recipient_data": {
+      "Recipient's Company Information": "Paytronix, part of Access Group, offers a cloud-based digital guest engagement platform for the hospitality sector. Serving over 1,800 brands across 50,000 sites, it provides loyalty programs, online ordering, and mobile apps to enhance customer experiences. With over 20 years of expertise, Paytronix helps businesses maximize guest value and profitability. Works in the Computer Software industry. Size of the company is 201. Company is based in 80 Bridge Street, Newton, MA, 02458, US. Company was founded in 2001.",
+      "Relevant company news": [
+        {
+          "url": "https://www.theglobeandmail.com/investing/markets/markets-news/GlobeNewswire/33144172/paytronix-partners-with-auphan-software-to-expand-canadian-footprint-drive-interoperability-for-smb-operators/",
+          "title": "Paytronix Partners with Auphan Software to Expand Canadian Footprint; Drive Interoperability for SMB Operators",
+          "description": "NEWTON, Mass. and VANCOUVER, British Columbia, July 01, 2025 (GLOBE NEWSWIRE) -- Paytronix, an Access Group company and leader in guest...",
+          "publishedAt": "2025-07-03T11:46:31.154Z",
+          "isRelevant": true
+        },
+        {
+          "url": "https://www.globenewswire.com/news-release/2025/06/03/3092814/0/en/Paytronix-Announces-Nonita-Verma-as-New-GM-Changes-to-Executive-Structure.html",
+          "title": "Paytronix Announces Nonita Verma as New GM, Changes to Executive Structure",
+          "description": "Paytronix, an Access Group company, and the leader in guest engagement for restaurants and convenience stores, has announced the appointment of technology...",
+          "publishedAt": "2025-06-24T11:46:31.154Z",
+          "isRelevant": true
+        },
+        {
+          "url": "https://thewisemarketer.com/parched-hospitality-group-puts-the-guest-experience-first-with-new-paytronix-rewards-app/",
+          "title": "Parched Hospitality Group Puts the Guest Experience First with New Paytronix Rewards App",
+          "description": "Paytronix, the leader in guest engagement for restaurants and convenience stores, and Australian culture inspired Parched Hospitality Group...",
+          "publishedAt": "2025-05-28T00:00:00.000Z",
+          "isRelevant": true
+        },
+        {
+          "url": "https://www.globenewswire.com/news-release/2025/05/12/3079165/0/en/Paytronix-Upgrades-In-App-Navigation-for-Guests-with-Interstitials-Deep-Linking-Messages.html",
+          "title": "Paytronix Upgrades In-App Navigation for Guests with Interstitials, Deep Linking Messages",
+          "description": "Paytronix, the leader in guest engagement for restaurants and convenience stores, today announced the launch of two new features to its branded mobile app.",
+          "publishedAt": "2025-0joy2T00:00:00.000Z",
+          "isRelevant": true
+        },
+        {
+          "url": "https://www.globenewswire.com/news-release/2025/04/16/3062614/0/en/Paytronix-2025-Loyalty-Report-Finds-Loyalty-Check-Sizes-Growing-But-Not-Universally.html",
+          "title": "Paytronix 2025 Loyalty Report Finds Loyalty Check Sizes Growing, But Not Universally",
+          "description": "Paytronix 2025 Loyalty Report Finds Loyalty Check Sizes Growing, But Not Universally · AI-enhanced data analytics, qualitative behavior feedback...",
+          "publishedAt": "2025-04-16T00:00:00.000Z",
+          "isRelevant": true
+        }
+      ],
+      "Recipient": "Stephanie Walther, CPA, CFE",
+      "Recipient Company Name": "Paytronix",
+      "Recipient's Job Title": "Financial Controller",
+      "Sender's Name": "Kirsten Orzechowski",
+      "Sender's Company": "https://www.regie.ai/",
+      "Sender's Job Title": "MM SDR",
+      "Value Proposition of Sender's Company": "Agents consolidate multiple prospecting tools into one platform, saving costs and streamlining workflow.",
+      "Problem Solved by Sender's Company": "Sales teams struggle with too many prospecting tools, hindering productivity.",
+      "Persona": "Operations Leader (BTL)"
+    }
+  },
+  {
+    "id": 9,
+    "email": "Hi Stephen,  \n\nExpanding translation and localization while keeping tech systems smooth must be key for you.  \n\nWhen I speak with other CTOs in the software industry, they often mention how hard it is to deliver quick, personalized service across multiple channels. We help teams solve this by giving their users one platform that works globally and scales as they grow.  \n\nWould you be open to a quick chat to see if this fits your goals?  \n\nThanks,  \nLauren  ",
+    "recipient_data": {
+      "Recipient's Career Summary": "Headquartered in Minneapolis, MN, United Language Group is a company that provides translation, localization, and interpreting. The company was established in 2015.",
+      "Recipient": "Stephen Torgeson",
+      "Recipient's Job Title": "Executive Vice President and Chief Technology Officer",
+      "Sender's Name": "Lauren",
+      "Sender's Calendar URL": "https://outlook.office365.com/owa/calendar/5b8173b10ccf4d3db92bc1cd4cfeb90c@ringcentral.com/cacea80b7eb141968c6ec0f7cf89219d16919362514695321101/calendar.html",
+      "Sender's Company": "RingCentral",
+      "Sender's Job Title": "Business Development Representative",
+      "Value Proposition of Sender's Company": "RingCentral offers scalable, global, cloud-based communication solutions that grow with the business, ensuring seamless adoption and high usage through user-friendly interfaces and robust support.",
+      "About Sender Company": "By choosing RingCX, you will empower your call center to provide an unparalleled client experience, streamline operations, and ensure compliance with legal industry standards.",
+      "Problem Solved by Sender's Company": "Customers today expect quick, personalized, and seamless service on their preferred channel. Meeting these high expectations consistently is a significant challenge."
+    }
+  },
+  {
+    "id": 10,
+    "email": "Hey Timothy,  \n\nI saw your team at Brinks Home is driving quality in complex systems.  \nHow are you managing the challenges of upgrading legacy applications while keeping processes consistent for QA?  \n\nWe help modernize outdated systems so change feels natural.  \nFor example, we worked with Cornerstone Building Brands to replace 4,000+ network devices and standardize operations across 50 sites.  \n\nWould you be open to a quick call to explore how we could do something similar for you?  \n\nBest,  ",
+    "recipient_data": {
+      "Prospect's work history": [
+        {
+          "title": "Senior Quality Assurance Engineer",
+          "company_name": "Brinks Home",
+          "is_current_position": true
+        },
+        {
+          "title": "Senior Quality Assurance Engineer",
+          "company_name": "Brinks Home",
+          "description": "",
+          "location": "",
+          "is_current_position": true,
+          "start_date": "20213",
+          "end_date": "00"
+        },
+        {
+          "title": "Associate",
+          "company_name": "Allata",
+          "description": "",
+          "location": "",
+          "is_current_position": false,
+          "start_date": "20197",
+          "end_date": "20213"
+        },
+        {
+          "title": "Consultant",
+          "company_name": "Allata",
+          "description": "",
+          "location": "Boise Metropolitan Area",
+          "is_current_position": false,
+          "start_date": "20192",
+          "end_date": "20213"
+        },
+        {
+          "title": "Software Engineer 2 / Test case development Lead",
+          "company_name": "Beyondsoft",
+          "description": "",
+          "location": "Boise Metropolitan Area",
+          "is_current_position": false,
+          "start_date": "201010",
+          "end_date": "20158"
+        },
+        {
+          "title": "Project Manager",
+          "company_name": "Beyondsoft",
+          "description": "",
+          "location": "Boise Metropolitan Area",
+          "is_current_position": false,
+          "start_date": "201010",
+          "end_date": "20158"
+        },
+        {
+          "title": "test tech",
+          "company_name": "manpower",
+          "description": "",
+          "location": "",
+          "is_current_position": false,
+          "start_date": "20031",
+          "end_date": "20061"
+        },
+        {
+          "title": "call center rep",
+          "company_name": "hp",
+          "description": "",
+          "location": "",
+          "is_current_position": false,
+          "start_date": "19971",
+          "end_date": "19991"
+        },
+        {
+          "title": "call center rep",
+          "company_name": "hp",
+          "description": "",
+          "location": "",
+          "is_current_position": false,
+          "start_date": "19971",
+          "end_date": "19991"
+        }
+      ],
+      "Recipient": "Timothy Taddicken",
+      "Recipient Company Name": "Brinks Home",
+      "Recipient's Job Title": "Senior Quality Assurance Engineer",
+      "Sender's Name": "Luis",
+      "Sender's Company": "Insight",
+      "Sender's Job Title": "Account Executive",
+      "Value Proposition of Sender's Company": "We modernize legacy systems and introduce technologies that solve real problems, fueling a culture where transformation happens naturally and continuously.",
+      "About Sender Company": "Insight Enterprises, Inc. is a Fortune 500 solutions integrator helping organizations accelerate their digital journey to modernize their business and maximize the value of technology. Insight’s technical expertise spans cloud and edge-based transformation solutions, with global scale and optimization built on 33+ years of deep partnerships with the world’s leading and emerging technology providers.",
+      "Problem Solved by Sender's Company": "Creating new tools and transforming legacy applications is a complex process. Building a culture that embraces modern approaches takes time and careful change management.",
+      "Persona": "Software Development & Product Delivery",
+      "Case Study Url": "https://www.insight.com/en_US/content-and-resources/case-studies/generative-ai-client-zero-insight-boosts-productivity-to-better-serve-clients.html",
+      "Case Study Title": "Generative AI Client Zero: Insight Boosts Productivity to Better Serve Clients",
+      "Case Study Summary": "Insight implemented generative AI using Microsoft Azure OpenAI to enhance productivity while maintaining data security. With a rapid eight-week worldwide rollout under the internally developed policy 'InsightGPT,' employees were empowered to experiment and create transformative workflows. Use cases ranged from automating HR tasks to categorizing sales data, saving substantial time and reducing errors. Insight also launched a generative AI platform tailored to employee roles, enabling specialized models for different business needs. This innovative approach delivered efficiencies across the enterprise and deepened generative AI expertise while expanding usage to upcoming projects like chatbots and copilot tools for clients and internal teams.",
+      "DISC Profile": [
+        "Medium Calculativeness"
+      ]
+    }
+    }
+]
