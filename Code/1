@@ -1,1 +1,1092 @@
+"""
+AI-Generated Email Evaluation System
+Implements 6 evaluation metrics based on research framework
+"""
 
+# ============================================================================
+# INSTALLATION & SETUP
+# ============================================================================
+
+# Install required packages
+!pip install openai anthropic google-generativeai sentence-transformers scikit-learn pandas numpy tenacity -q
+
+import os
+import json
+import time
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Tuple
+from dataclasses import dataclass
+from sklearn.cluster import KMeans
+from sentence_transformers import SentenceTransformer
+import openai
+from anthropic import Anthropic
+from tenacity import retry, stop_after_attempt, wait_random_exponential
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+
+class Config:
+    """Configuration for API keys and model selection"""
+
+    # ============================================================================
+    # OPENROUTER CONFIGURATION
+    # ============================================================================
+    # Set your OpenRouter API key here
+    OPENROUTER_API_KEY = "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"
+
+    # OpenRouter base URL
+    OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+
+    # Choose your model from OpenRouter's catalog
+    # Examples:
+    # - "openai/gpt-4o"
+    # - "anthropic/claude-sonnet-4"
+    # - "google/gemini-2.5-flash"
+    # - "anthropic/claude-3.5-haiku"
+    # - "openai/gpt-4o-mini"
+    # - "google/gemma-3-4b-it"
+    # - "anthropic/claude-sonnet-4"
+    EVALUATION_MODEL = "anthropic/claude-sonnet-4"
+
+
+    # Semantic entropy settings
+    N_SEMANTIC_SAMPLES = 5  # Number of outputs to generate for semantic entropy
+
+    # API Pricing (USD per 1M tokens) - OpenRouter pricing
+    PRICING = {
+    # OpenAI Models
+    'openai/gpt-5': {'input': 1.25, 'output': 10.0},
+    'openai/gpt-4o': {'input': 2.5, 'output': 10.0},
+    'openai/gpt-4-turbo': {'input': 10.0, 'output': 30.0},
+    'openai/gpt-4o-mini': {'input': 0.15, 'output': 0.6},
+    'openai/gpt-5-chat': {'input': 1.25, 'output': 10},
+
+    # Anthropic Models
+    'anthropic/claude-sonnet-4': {'input': 3.0, 'output': 15.0},
+    'anthropic/claude-3.5-haiku': {'input': 0.8, 'output': 4.0},
+    'anthropic/claude-3-haiku': {'input': 0.25, 'output': 1.25},
+
+    # Google Models
+    'google/gemini-2.5-flash': {'input': 0.3, 'output': 2.5},
+    'google/gemini-2.5-pro': {'input': 1.25, 'output': 10.0},
+    'google/gemma-3-4b-it': {'input': 0.017, 'output': 0.068},
+
+    # Qwen Models
+    'qwen/qwen-2.5-72b-instruct': {'input': 0.35, 'output': 0.4},
+    'qwen/qwen2.5-vl-72b-instruct': {'input': 0.0, 'output': 0.0},
+    'qwen/qwen3-coder-30b-a3b-instruct': {'input': 0.06, 'output': 0.25},
+
+    # Meta Models
+    'meta-llama/llama-3.3-70b-instruct': {'input': 0.35, 'output': 0.4},
+
+    # Mistral Models
+    'mistralai/mistral-small-3.2-24b-instruct:free': {'input': 0.0, 'output': 0.0},
+
+    # xAI Models
+    'x-ai/grok-4-fast': {'input': 0.20, 'output': 0.50},
+
+    # Amazon Models
+    'amazon/nova-micro-1.0': {'input': 0.035, 'output': 0.14},
+
+    # DeepSeek Models
+    'deepseek/deepseek-v3-0324': {'input': 0.24, 'output': 0.84},
+    'deepseek/deepseek-v3': {'input': 0.3, 'output': 0.85},
+
+    # Llama Models:
+    'sao10k/l3-lunaris-8b': {'input': 0.04, 'output': 0.05},
+
+    'x-ai/grok-4-fast': {'input': 0.2, 'output': 0.5},
+    }
+
+    @classmethod
+    def setup(cls):
+        """Setup OpenRouter client"""
+        # Configure OpenAI client to use OpenRouter
+        client = openai.OpenAI(
+            api_key=cls.OPENROUTER_API_KEY,
+            base_url=cls.OPENROUTER_BASE_URL,
+            default_headers={
+                "HTTP-Referer": "https://github.com/yourusername/email-eval",  # Optional
+                "X-Title": "Email Evaluation System",  # Optional
+            }
+        )
+        return {
+            'openai': client,  # This client works for all OpenRouter models
+            'openrouter': client
+        }
+
+    @classmethod
+    def get_model_cost(cls, model: str, input_tokens: int, output_tokens: int) -> float:
+        """Calculate cost for a model call"""
+        if model not in cls.PRICING:
+            # If model not in pricing dict, return 0 (unknown cost)
+            print(f"⚠️  Warning: No pricing info for model '{model}'. Cost tracking disabled.")
+            return 0.0
+
+        pricing = cls.PRICING[model]
+        input_cost = (input_tokens / 1_000_000) * pricing['input']
+        output_cost = (output_tokens / 1_000_000) * pricing['output']
+        return input_cost + output_cost
+
+# ============================================================================
+# DATA STRUCTURES
+# ============================================================================
+
+@dataclass
+class EvaluationResult:
+    """Store evaluation results for a single email"""
+    hallucination_score: int  # Binary: 0 or 1
+    cta_quality: int  # 1-5
+    language_quality: int  # 1-5
+    relevance: int  # 1-5
+    human_likeness: int  # 1-5
+    instruction_adherence: int  # 1-5
+
+    overall_score: float
+    is_acceptable: bool
+    detailed_feedback: Dict
+
+    # Cost tracking
+    total_cost: float
+    input_tokens: int
+    output_tokens: int
+    api_calls: int
+
+    def to_dict(self):
+        return {
+            'hallucination_score': self.hallucination_score,
+            'cta_quality': self.cta_quality,
+            'language_quality': self.language_quality,
+            'relevance': self.relevance,
+            'human_likeness': self.human_likeness,
+            'instruction_adherence': self.instruction_adherence,
+            'overall_score': self.overall_score,
+            'is_acceptable': self.is_acceptable,
+            'total_cost_usd': self.total_cost,
+            'input_tokens': self.input_tokens,
+            'output_tokens': self.output_tokens,
+            'api_calls': self.api_calls,
+            'detailed_feedback': self.detailed_feedback
+        }
+
+# ============================================================================
+# FAST ALGORITHMIC INSTRUCTION ADHERENCE (1–5 scale)
+# ============================================================================
+
+import re, json
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sentence_transformers import SentenceTransformer, util
+
+def _build_instruction_context(entry: dict) -> str:
+    """
+    Combine multiple JSON fields (instructions, user_prompt, recipient_data)
+    into one unified context string for evaluation.
+    """
+    parts = []
+    if entry.get("instructions"):
+        parts.append("Guidelines:\n" + entry["instructions"])
+
+    if entry.get("user_prompt"):
+        parts.append("Prompt Structure:\n" + entry["user_prompt"])
+
+    if "recipient_data" in entry:
+        recipient = entry["recipient_data"]
+        persona_lines = []
+        for k, v in recipient.items():
+            if isinstance(v, str):
+                persona_lines.append(f"{k}: {v}")
+            elif isinstance(v, (list, dict)):
+                persona_lines.append(f"{k}: {json.dumps(v)}")
+        parts.append("Recipient Context:\n" + "\n".join(persona_lines))
+
+    return "\n\n".join(parts)
+
+
+def evaluate_instruction_adherence_jsonaware(entry: dict, encoder=None) -> Tuple[int, str]:
+    """
+    JSON-aware Instruction Adherence Evaluation (1–5 scale, moderate strictness)
+    Combines rule-based checks + semantic similarity using
+    all fields (instructions + user_prompt + recipient_data)
+    """
+    if encoder is None:
+        encoder = SentenceTransformer("all-MiniLM-L6-v2")
+
+    email = entry.get("email", "")
+    combined_context = _build_instruction_context(entry)
+
+    # --- Step 1. Semantic similarity (0–1) ---
+    emb_email = encoder.encode(email, convert_to_tensor=True)
+    emb_context = encoder.encode(combined_context, convert_to_tensor=True)
+    sem_sim = float(util.cos_sim(emb_email, emb_context))
+
+    # --- Step 2. Keyword overlap (0–1) ---
+    def _extract_keywords(text):
+        text = re.sub(r'[^a-zA-Z ]', ' ', text.lower())
+        vec = CountVectorizer(stop_words='english', max_features=64)
+        vec.fit([text])
+        return set(vec.get_feature_names_out())
+
+    kw_e = _extract_keywords(email)
+    kw_i = _extract_keywords(combined_context)
+    kw_overlap = len(kw_e & kw_i) / max(len(kw_i), 1)
+
+    # --- Step 3. Rule compliance (0–1) ---
+    rules_total, rules_pass = 0, 0
+
+    # Greeting check: "Hi" or "Hey" allowed, case-insensitive
+    rules_total += 1
+    if re.search(r"^(hi|hey)\s+[A-Z][a-z]+", email.strip(), re.IGNORECASE):
+        rules_pass += 1
+
+    # One question at end
+    rules_total += 1
+    q_marks = email.count("?")
+    if q_marks == 1 and re.search(r"\?\s*$", email.strip()):
+        rules_pass += 1
+
+    # Length rule (<120 words now, more lenient)
+    rules_total += 1
+    if len(email.split()) <= 120:
+        rules_pass += 1
+
+    # Avoid banned cliches
+    forbidden = [
+        "I hope this finds you well", "Just following up", "Looking forward to hearing from you",
+        "Quick question", "Check in", "Reach out", "Sorry to disturb you"
+    ]
+    rules_total += 1
+    if not any(f.lower() in email.lower() for f in forbidden):
+        rules_pass += 1
+
+    rule_score = rules_pass / max(rules_total, 1)
+
+    # --- Step 4. Weighted combination ---
+    raw = 0.45 * sem_sim + 0.35 * kw_overlap + 0.20 * rule_score
+    raw = min(1.0, max(0.0, raw))
+
+    # --- Step 5. Smooth scaling ---
+    if sem_sim > 0.7:
+        bias = 0.3
+    elif sem_sim > 0.5:
+        bias = 0.2
+    else:
+        bias = 0.1
+    adjusted = min(1.0, raw + bias)
+
+    score_1_5 = max(1, min(5, int(round(adjusted * 5))))
+
+    # --- Step 6. Explanation text ---
+    reasoning = (
+        f"Semantic Similarity: {sem_sim:.2f}, Keyword Overlap: {kw_overlap:.2f}, "
+        f"Rule Compliance: {rule_score:.2f}. Adjusted Score: {score_1_5}/5."
+    )
+
+    return score_1_5, reasoning
+
+
+
+# ============================================================================
+# LLM-AS-JUDGE EVALUATOR
+# ============================================================================
+
+class LLMEvaluator:
+    """
+    Uses LLM-as-judge approach for evaluating email quality
+    Works with OpenRouter API
+    """
+
+    def __init__(self, model: str = "openai/gpt-5-chat"):
+        self.model = model
+        self.clients = Config.setup()
+        self.client = self.clients['openrouter']  # Use OpenRouter client for all models
+        self.total_input_tokens = 0
+        self.total_output_tokens = 0
+        self.total_api_calls = 0
+        self.total_cost = 0.0
+
+    @retry(wait=wait_random_exponential(multiplier=1, max=60), stop=stop_after_attempt(3))
+    def _call_llm(self, prompt: str) -> Tuple[str, int, int]:
+        """
+        Call LLM via OpenRouter with retry mechanism
+        Returns: (response, input_tokens, output_tokens)
+        """
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
+                response_format={ "type": "json_object" } # Request JSON object
+            )
+
+            input_tokens = response.usage.prompt_tokens
+            output_tokens = response.usage.completion_tokens
+            content = response.choices[0].message.content
+
+            # Track usage
+            self.total_input_tokens += input_tokens
+            self.total_output_tokens += output_tokens
+            self.total_api_calls += 1
+
+            # Calculate cost
+            cost = Config.get_model_cost(self.model, input_tokens, output_tokens)
+            self.total_cost += cost
+
+            return content, input_tokens, output_tokens
+
+        except openai.APIError as e:
+            print(f"❌ API Error calling OpenRouter API: {e}")
+            # Re-raise the exception to trigger retry
+            raise
+        except Exception as e:
+            print(f"❌ Error calling OpenRouter API: {e}")
+            raise
+
+    def reset_usage(self):
+        """Reset usage counters"""
+        self.total_input_tokens = 0
+        self.total_output_tokens = 0
+        self.total_api_calls = 0
+        self.total_cost = 0.0
+
+    def get_usage_stats(self) -> Dict:
+        """Get current usage statistics"""
+        return {
+            'total_input_tokens': self.total_input_tokens,
+            'total_output_tokens': self.total_output_tokens,
+            'total_api_calls': self.total_api_calls,
+            'total_cost_usd': round(self.total_cost, 4)
+        }
+
+# ============================================================================
+# Hallucination Evaluater
+# ============================================================================    
+
+    def evaluate_hallucination(self, email: str, context: str = "") -> Tuple[int, str]:
+        """Evaluate Hallucination (Binary Score: 0 or 1)"""
+        prompt = f"""Evaluate the hallucination of this email on a binary scale of 0 or 1.
+
+Email:
+{email}
+
+{f"Context: {context}" if context else ""}
+
+Description: Evaluates whether the email contains fabricated information (factual inaccuracies) or contextual misalignments (content deviating from provided JSON data), ensuring factual accuracy and contextual fidelity.
+
+Score 0: No Hallucination
+All specific claims are verifiable in the provided JSON data or are appropriately general statements.
+Requirements:
+All recipient details (name, title, company, work history) match JSON exactly
+All sender company information (capabilities, metrics, value proposition) is from JSON
+Any specific numbers, statistics, dates, or events are explicitly provided in JSON
+General industry statements do not make unverifiable specific claims
+No prohibited information mentioned (founding year, employee count, work history >4 years)
+Content aligns with stated problems, persona, and solution domain in JSON
+Data attribution is correct (no mixing recipient and sender information)
+
+Score 1: Hallucination Detected
+The email contains ANY of the following:
+Fabricated specific facts not in JSON (statistics, metrics, events, activities, organizational details)
+Prohibited mentions even if factually correct (founding year, employee count, work history >4 years old)
+Incorrect use of provided data (wrong title, wrong company, misattribution)
+Made-up recipient background or career information not in work history
+Invented recent activities or signals not listed in JSON
+Specific claims about recipient's company unsupported by JSON
+Contextual misalignment (problems, solutions, or industry not matching JSON input)
+Sender company capabilities or metrics not stated in JSON
+
+
+Respond *only* with a JSON object containing 'score' (0 or 1) and 'reasoning' (string):
+"""
+
+        response_text, _, _ = self._call_llm(prompt)
+        try:
+            result = json.loads(response_text)
+            return result['score'], result['reasoning']
+        except json.JSONDecodeError as e:
+            print(f"❌ JSON Decode Error: {e}")
+            print(f"Raw LLM response: {response_text}")
+            # Return default values or raise an error based on desired behavior
+            return 5, f"Error parsing LLM response: {response_text[:200]}..." # Return a default score and truncated response
+
+# ============================================================================
+# CTA Evaluater
+# ============================================================================    
+    def evaluate_cta_quality(self, email: str, context: str = "") -> Tuple[int, str]:
+        """Evaluate Call-to-Action quality (1-5 scale)"""
+        prompt = f"""Evaluate the Call-to-Action (CTA) quality of this email on a scale of 1-5.
+
+Email:
+{email}
+
+{f"Context: {context}" if context else ""}
+
+Evaluation Criteria:
+- Clarity: Is the desired action clear?
+- Relevance: Does it align with the email's purpose?
+- Effectiveness: Is it compelling and low-friction?
+- Appropriateness: Does it fit the context?
+
+Score 5: Excellent
+Action is crystal clear and specific (e.g., "15-minute call," "brief conversation")
+Logically flows from email content and stated problem
+Low-friction ask with clear value to recipient
+Appropriate tone and commitment level for cold outreach stage
+One question positioned at the end
+
+Score 4: Good
+Clear action but could be more specific
+Relevant to content with minor disconnect
+Reasonably compelling with moderate friction
+Generally appropriate with slight tone misalignment
+
+Score 3: Average
+Understandable but vague or generic (e.g., "Thoughts?" "Interested?")
+Loosely connected to email content
+Weak value articulation or passive language
+Functional but uninspiring
+
+Score 2: Poor
+Unclear, confusing, or misaligned with content
+Pushy language or inappropriate commitment level
+Multiple questions or not at end (rule violation)
+Uses prohibited phrases ("spare time," "request," "looking forward to hearing")
+
+Score 1: Very Poor
+Missing entirely
+Completely inappropriate or nonsensical
+No perceivable value or extremely high friction
+Multiple rule violations
+
+Respond *only* with a JSON object containing 'score' (integer 1-5) and 'reasoning' (string):
+"""
+
+        response_text, _, _ = self._call_llm(prompt)
+        try:
+            result = json.loads(response_text)
+            return result['score'], result['reasoning']
+        except json.JSONDecodeError as e:
+            print(f"❌ JSON Decode Error: {e}")
+            print(f"Raw LLM response: {response_text}")
+            # Return default values or raise an error based on desired behavior
+            return 5, f"Error parsing LLM response: {response_text[:200]}..." # Return a default score and truncated response
+
+
+# ============================================================================
+# Language Quality Evaluater
+# ============================================================================    
+    def evaluate_language_quality(self, email: str) -> Tuple[int, str]:
+        """Evaluate language quality and coherence (1-5 scale)"""
+        prompt = f"""Evaluate the language quality and structural coherence of this email on a scale of 1-5.
+
+Email:
+{email}
+
+Description: Evaluates the technical quality of writing, including grammar, spelling, vocabulary appropriateness, sentence structure variety, and proper punctuation/formatting.
+
+Scoring:
+5: Excellent (1.0 multiplier)
+Free of major grammatical and spelling errors
+Vocabulary is appropriate for sales context and audience
+Information presented concisely without unnecessary repetition
+Varied sentence structures enhance readability
+Punctuation and formatting properly used, enhancing clarity
+
+4: Good (0.8 multiplier)
+Mostly free of major errors with only minor issues
+Mostly appropriate vocabulary
+Mostly concise with minor repetition
+Mostly varied sentence structures
+Mostly proper punctuation/formatting with minor issues
+
+3: Average (0.5 multiplier)
+Some major grammatical or spelling errors present
+Somewhat appropriate vocabulary
+Somewhat concise but with noticeable repetition
+Somewhat varied sentence structures
+Some issues with punctuation and formatting
+
+2: Poor (0.2 multiplier)
+Numerous major grammatical and spelling errors
+Inappropriate or awkward vocabulary choices
+Not concise; significant repetition present
+Limited variety in sentence structures
+Numerous issues with punctuation and formatting
+
+1: Very Poor (0 multiplier)
+Pervasive errors that impede comprehension
+Consistently inappropriate vocabulary
+Excessive repetition and verbosity
+Monotonous sentence structure
+Poor punctuation/formatting that hinders readability
+
+Respond *only* with a JSON object containing 'score' (integer 1-5) and 'reasoning' (string):
+"""
+
+        response_text, _, _ = self._call_llm(prompt)
+        try:
+            result = json.loads(response_text)
+            return result['score'], result['reasoning']
+        except json.JSONDecodeError as e:
+            print(f"❌ JSON Decode Error: {e}")
+            print(f"Raw LLM response: {response_text}")
+            return 5, f"Error parsing LLM response: {response_text[:200]}..."
+
+# ============================================================================
+# Personalization Evaluater
+# ============================================================================    
+    def evaluate_personalization(self, email: str, context: str) -> Tuple[int, str]:
+      """Evaluate personalization and relevance (1–5 scale)"""
+      prompt = f"""Evaluate how well this email is tailored to the specific recipient and addresses their relevant needs.
+
+Email:
+{email}
+
+{f"Context: {context}" if context else ""}
+
+Description:
+Evaluates how well the email content is personalized using the provided context, which includes recipient details
+(e.g., job title, company, industry, value proposition, and relevant keywords). The goal is to measure how
+specific, relevant, and valuable the message is for that recipient.
+
+Evaluation Criteria:
+
+1. Personalization (50%):
+- Uses contextual details naturally (role, company, or current challenges)
+- Message feels written FOR this person, not just ABOUT them
+- Avoids mechanical data insertion or irrelevant personalization
+- Maintains tone and flow while integrating contextual data
+
+2. Relevance & Value (50%):
+- Addresses a real, contextually relevant problem or opportunity
+- The value proposition clearly connects to the recipient’s situation
+- Information is specific, actionable, and timely
+- Avoids vague or generic statements that could apply to anyone
+
+Scoring:
+5: Excellent – Deeply personalized and clearly relevant; unique to the recipient
+4: Good – Strong use of context with minor gaps or generic spots
+3: Average – Some personalization, but mostly templated or general
+2: Poor – Superficial personalization; weak connection to context
+1: Very Poor – No meaningful personalization; completely generic
+
+Respond *only* with a JSON object containing 'score' (integer 1–5) and 'reasoning' (string):
+"""
+
+      response_text, _, _ = self._call_llm(prompt)
+      try:
+          result = json.loads(response_text)
+          return result['score'], result['reasoning']
+      except json.JSONDecodeError as e:
+          print(f"❌ JSON Decode Error: {e}")
+          print(f"Raw LLM response: {response_text}")
+          return 3, f"Error parsing LLM response: {response_text[:200]}..."
+
+
+# ============================================================================
+# Human-likeness Evaluater
+# ============================================================================    
+
+    def evaluate_human_likeness(self, email: str) -> Tuple[int, str]:
+        """Evaluate how human-like the email sounds (1-5 scale)"""
+        prompt = f"""Evaluate whether this email reads like it was written by a real person with natural thought patterns and authentic voice.
+
+Email:
+{email}
+
+Description: Assesses whether the output reads like it was written by a real person with natural thought patterns, personal experience, and authentic voice - not polished AI text.
+
+Scoring:
+5: Excellent - Sounds Like a Real Person
+Mixes short and long sentences naturally (not all the same length)
+Uses everyday words alongside more complex ones when needed
+Refers to past experiences, future plans, or current situations appropriately
+May contain minor corrections or casual phrasing (how people actually write)
+Complexity matches the topic and audience (not overly complicated or simple)
+Conversational and direct, not unnecessarily formal or wordy
+Has a distinct voice; doesn't sound generic or overly professional
+
+4: Good - Mostly Natural
+Mostly sounds like a person, with 1-2 slightly awkward moments
+Occasionally too formal or polite for the context
+Generally varied writing but a few phrases feel repetitive
+Word choices mostly natural but occasionally generic
+One or two unclear transitions between ideas
+
+3: Average - Noticeably Artificial
+Half natural, half robotic feeling
+Sentences feel too similar in structure or length
+Significantly longer than needed (explains too much)
+Repeats the same words or phrases unnecessarily
+Overly cheerful or neutral without reason
+Makes statements without personal connection or reasoning
+Doesn't mention time, context, or specific situations when relevant
+
+2: Poor - Clearly AI-Like
+Uses common phrases you see in many AI responses
+Every sentence structured the same way
+Emotions expressed sound rehearsed or fake
+Too formal for no reason, or polite in an unnatural way
+References vague or don't make sense
+Sounds educated but has no personality
+Uses cautious language everywhere ("it's important to note," "one might consider")
+
+1: Very Poor - Obviously AI
+Standard AI response patterns throughout
+Zero personality or variation in style
+Formal or emotional in ways that don't fit the situation
+Contradicts itself or mentions things that don't connect
+No personal perspective or real-world grounding
+Flows well but feels empty of actual thought
+Every part sounds equally polished and impersonal
+
+Respond *only* with a JSON object containing 'score' (integer 1-5) and 'reasoning' (string):
+"""
+
+        response_text, _, _ = self._call_llm(prompt)
+        try:
+            result = json.loads(response_text)
+            return result['score'], result['reasoning']
+        except json.JSONDecodeError as e:
+            print(f"❌ JSON Decode Error: {e}")
+            print(f"Raw LLM response: {response_text}")
+            return 5, f"Error parsing LLM response: {response_text[:200]}..."
+
+    
+# ============================================================================
+# MAIN EVALUATION PIPELINE
+# ============================================================================
+
+class EmailEvaluationPipeline:
+    """
+    Complete evaluation pipeline for AI-generated emails
+    Works with OpenRouter API
+    """
+
+    def __init__(self, model: str = "openai/gpt-5-chat"):
+        self.llm_eval = LLMEvaluator(model)
+        self.clients = Config.setup()
+        self.openrouter_client = self.clients['openrouter']
+    
+    # ✅ New function: Automatically build context from recipient_data
+    def _build_context_from_recipient(self, recipient_data: dict, context_text: str = "") -> str:
+        """
+        Builds a readable, structured context string for hallucination detection.
+        Combines recipient_data and context fields into a clean text prompt.
+        """
+        if not recipient_data:
+            return context_text or ""
+
+        try:
+            name = recipient_data.get("Recipient", "")
+            job_title = recipient_data.get("Recipient's Job Title", "")
+            company = recipient_data.get("Recipient Company Name", "")
+            industry = ""
+            intent_keywords = ""
+            sender_company = recipient_data.get("Sender's Company", "")
+            sender_name = recipient_data.get("Sender's Name", "")
+            value_prop = recipient_data.get("Value Proposition of Sender's Company", "")
+            problem_solved = recipient_data.get("Problem Solved by Sender's Company", "")
+
+            # Extract industry and intent keywords from CRM fields
+            crm_fields = recipient_data.get("CRM fields taken from Prospect's contact or company information", [])
+            if isinstance(crm_fields, list):
+                for field in crm_fields:
+                    label = field.get("label", "")
+                    val = field.get("value", "")
+                    if "Industry" in label:
+                        industry = val
+                    elif "Top 5 Intent Keywords" in label:
+                        intent_keywords = val
+
+            # Work history summary
+            history = recipient_data.get("Prospect's work history", [])
+            current_jobs = [
+                f"{h.get('title', '')} at {h.get('company_name', '')}"
+                for h in history if h.get("is_current_position")
+            ]
+            work_summary = "; ".join(current_jobs) if current_jobs else ""
+
+            # Build readable context string
+            context_str = f"""
+            Recipient: {name}, {job_title} at {company}
+            Current Role(s): {work_summary}
+            Industry: {industry}
+            Sender: {sender_name} from {sender_company}
+            Problem Solved: {problem_solved}
+            Value Proposition: {value_prop}
+            Top 5 Intent Keywords: {intent_keywords}
+            """
+            if context_text:
+                context_str += f"\nAdditional Context: {context_text}"
+
+            # Clean formatting
+            context_str = "\n".join(line.strip() for line in context_str.splitlines() if line.strip())
+            return context_str
+
+        except Exception as e:
+            print(f"⚠️ Error building context: {e}")
+            return context_text or ""
+
+    def evaluate_email(
+        self,
+        email: str,
+        instructions: str = "",
+        recipient_data: Dict = None,
+        context: str = "",
+        check_hallucination: bool = True,
+        user_prompt: str = ""
+    ) -> EvaluationResult:
+        """
+        Comprehensive email evaluation
+
+        Args:
+            email: The email text to evaluate
+            instructions: Original instructions for email generation
+            recipient_data: Dict with recipient information (role, company, etc.)
+            context: Additional context for relevance evaluation
+            check_hallucination: Whether to run semantic entropy check (slower)
+        """
+
+        start_time = time.time()
+        print("Starting evaluation...")
+        detailed_feedback = {}
+
+        # Reset usage counters for this evaluation
+        self.llm_eval.reset_usage()
+
+        # ✅ Change to automatic context building
+        context_str = self._build_context_from_recipient(recipient_data, context)  
+
+        # 1. Hallucination Detection
+        print("Evaluating Hallucination Detection...")
+        hi_score, hi_reasoning = self.llm_eval.evaluate_hallucination(email, context_str)
+        detailed_feedback['hallucination'] = hi_reasoning
+
+        # 2. CTA Quality
+        print("Evaluating CTA quality...")
+        cta_score, cta_reasoning = self.llm_eval.evaluate_cta_quality(email, context_str)
+        detailed_feedback['cta'] = cta_reasoning
+
+        # 3. Language Quality
+        print("Evaluating language quality...")
+        lq_score, lq_reasoning = self.llm_eval.evaluate_language_quality(email)
+        detailed_feedback['language_quality'] = lq_reasoning
+
+        # 4. Personalization
+        print("Evaluating Personalization...")
+        if recipient_data:
+            rel_score, rel_reasoning = self.llm_eval.evaluate_personalization(
+                email, context_str
+            )
+        else:
+            rel_score, rel_reasoning = 5, "No recipient data provided"
+        detailed_feedback['relevance'] = rel_reasoning
+
+        # 5. Human-likeness
+        print("Evaluating human-likeness...")
+        hl_score, hl_reasoning = self.llm_eval.evaluate_human_likeness(email)
+        detailed_feedback['human_likeness'] = hl_reasoning
+
+        # 6. Instruction Adherence
+        print("Evaluating instruction adherence (JSON-aware)...")
+        if instructions:
+            try:
+                ia_entry = {
+                    "email": email,
+                    "instructions": instructions,
+                    "user_prompt": user_prompt,
+                    "recipient_data": recipient_data or {}
+                }
+                ia_score, ia_reasoning = evaluate_instruction_adherence_jsonaware(ia_entry)
+                print(f"IA score computed successfully: {ia_score}/5")
+            except Exception as e:
+                print(f"⚠️ IA Evaluation Error: {e}")
+                ia_score, ia_reasoning = 3, f"Algorithmic evaluation failed: {e}"
+        else:
+            ia_score, ia_reasoning = 5, "No instructions provided"
+
+
+        detailed_feedback['instruction_adherence'] = ia_reasoning
+
+
+        # Get usage statistics
+        usage_stats = self.llm_eval.get_usage_stats()
+
+
+        # Calculate overall score (weighted average)
+        # Exclude hallucination score from overall average as it's binary
+        scores = [cta_score, lq_score, rel_score, hl_score, ia_score]
+        # Filter out potential error scores (-1) before calculating average
+        valid_scores = [score for score in scores if score != -1]
+        overall_score = np.mean(valid_scores) if valid_scores else 0
+
+
+        # Check acceptability conditions
+        # Unacceptable if: HI == 1 OR AVG(scores) <= 3 OR LQ <= 2
+        # Also consider hallucination_score = -1 as potentially unacceptable
+        is_acceptable = (
+            (hi_score == 0 or hi_score == -1) and # Treat error as potentially acceptable if other scores are good
+            overall_score > 3 and
+            lq_score > 2
+        )
+
+        elapsed_time = time.time() - start_time  # ⬅️ Added: calculate elapsed time
+        detailed_feedback['runtime_seconds'] = elapsed_time  # ⬅️ Added: store runtime in feedback
+
+
+        print(f"\nEvaluation complete!")
+        print(f"💰 Cost: ${usage_stats['total_cost_usd']:.4f}")
+        print(f"📊 Tokens: {usage_stats['total_input_tokens']} in / {usage_stats['total_output_tokens']} out")
+        print(f"🔄 API Calls: {usage_stats['total_api_calls']}")
+        print(f"⏱️ Runtime: {elapsed_time:.2f} seconds")  # ⬅️ Added: print runtime
+
+        return EvaluationResult(
+            hallucination_score=hi_score,
+            #semantic_entropy=entropy,
+            cta_quality=cta_score,
+            language_quality=lq_score,
+            relevance=rel_score,
+            human_likeness=hl_score,
+            instruction_adherence=ia_score,
+            overall_score=overall_score,
+            is_acceptable=is_acceptable,
+            detailed_feedback=detailed_feedback,
+            total_cost=usage_stats['total_cost_usd'],
+            input_tokens=usage_stats['total_input_tokens'],
+            output_tokens=usage_stats['total_output_tokens'],
+            api_calls=usage_stats['total_api_calls']
+        )
+
+    def evaluate_batch(
+        self,
+        emails: List[Dict],
+        check_hallucination: bool = False
+    ) -> pd.DataFrame:
+        """
+        Evaluate multiple emails in batch
+
+        Args:
+            emails: List of dicts with keys: 'email', 'instructions', 'recipient_data', 'context'
+            check_hallucination: Whether to check hallucination (much slower)
+
+        Returns:
+            DataFrame with all evaluation results
+        """
+        results = []
+        total_cost = 0.0
+        batch_start = time.time()  # ⬅️ Added: record batch start time
+
+
+        for i, email_data in enumerate(emails):
+            print(f"\n{'='*60}")
+            print(f"Evaluating email {i+1}/{len(emails)}")
+            print(f"{'='*60}")
+
+            result = self.evaluate_email(
+                email=email_data['email'],
+                instructions=email_data.get('instructions', ''),
+                recipient_data=email_data.get('recipient_data'),
+                context=email_data.get('context', ''),
+                check_hallucination=check_hallucination,
+                user_prompt=email_data.get('user_prompt', '')
+            )
+
+            total_cost += result.total_cost
+
+            results.append({
+                'email_id': i,
+                **result.to_dict(),
+                'runtime_seconds': result.detailed_feedback.get('runtime_seconds', None)  # ⬅️ Added: save per-email runtime
+            })
+
+
+        # Print batch summary
+        print(f"\n{'='*60}")
+        print(f"BATCH EVALUATION SUMMARY")
+        print(f"{'='*60}")
+        print(f"Total emails evaluated: {len(emails)}")
+        print(f"💰 Total cost: ${total_cost:.4f}")
+        print(f"💰 Average cost per email: ${total_cost/len(emails):.4f}")
+        print(f"💰 Cost for 10,000 emails: ${(total_cost/len(emails))*10000:.2f}")
+        batch_elapsed = time.time() - batch_start  # ⬅️ Added: calculate total batch runtime
+        print(f"🕒 Total batch runtime: {batch_elapsed:.2f} seconds")  # ⬅️ Added
+        print(f"⏳ Average runtime per email: {batch_elapsed/len(emails):.2f} seconds")  # ⬅️ Added
+
+
+        return pd.DataFrame(results)
+
+
+
+
+
+
+
+
+
+
+
+
+# ============================================================================
+# DATA LOADING FUNCTIONS + DUAL JSON EVALUATION (LLM + Algorithmic IA)
+# ============================================================================
+
+import os, json, pandas as pd
+from typing import List, Dict
+from tabulate import tabulate
+
+# --- Algorithmic IA import ---
+from sentence_transformers import SentenceTransformer, util
+import re
+from sklearn.feature_extraction.text import CountVectorizer
+import numpy as np
+
+def _extract_keywords_simple(text: str, max_features=64) -> set:
+    text = re.sub(r'[^a-zA-Z ]', ' ', (text or "").lower())
+    vec = CountVectorizer(stop_words='english', max_features=max_features)
+    vec.fit([text])
+    return set(vec.get_feature_names_out())
+
+def evaluate_instruction_adherence_fast(email: str, instructions: str, encoder=None) -> int:
+    if encoder is None:
+        encoder = SentenceTransformer("all-MiniLM-L6-v2")
+
+    email = email or ""
+    instructions = instructions or ""
+
+    emb_email = encoder.encode(email, convert_to_tensor=True)
+    emb_instr = encoder.encode(instructions, convert_to_tensor=True)
+    sem_sim = float(util.cos_sim(emb_email, emb_instr))
+
+    kw_e = _extract_keywords_simple(email)
+    kw_i = _extract_keywords_simple(instructions)
+    overlap = len(kw_e & kw_i)
+    kw_score = overlap / max(len(kw_i), 1)
+
+    n_para = len(re.split(r'\n{2,}', email.strip())) if email.strip() else 0
+    struct_score = min(n_para / 3.0, 1.0)
+
+    penalties = 0.0
+    if len(email) < 80:
+        penalties += 0.1
+
+    raw = 0.45 * sem_sim + 0.35 * kw_score + 0.20 * struct_score - penalties
+    raw = max(0.0, min(1.0, raw))
+    score_1_5 = max(1, min(5, int(round(raw * 5))))
+    return score_1_5
+
+
+def load_test_data_from_file(file_path: str) -> List[Dict]:
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"❌ File not found: {file_path}")
+
+    file_ext = os.path.splitext(file_path)[1].lower()
+    if file_ext != '.json':
+        raise ValueError(f"❌ Unsupported format: {file_ext}. Only .json supported")
+
+    with open(file_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    for item in data:
+        if 'id' in item:
+            try:
+                item['id'] = int(item['id'])
+            except Exception:
+                pass
+
+    required_fields = ['email']
+    for i, item in enumerate(data):
+        for field in required_fields:
+            if field not in item:
+                raise ValueError(f"❌ Missing required field '{field}' in item {i}")
+
+    print(f"✅ Loaded {len(data)} samples from {os.path.basename(file_path)}")
+    return data
+
+
+def test_spreadsheet_examples(file_path_main: str, file_path_instruction: str):
+    print("\n" + "=" * 80)
+    print("🧪 TESTING WITH EXTERNAL TEST DATA (Dual JSON Mode)")
+    print("=" * 80)
+
+    print(f"📁 Loading main data: {file_path_main}")
+    main_data = load_test_data_from_file(file_path_main)
+
+    print(f"📁 Loading instruction data: {file_path_instruction}")
+    instruction_data = load_test_data_from_file(file_path_instruction)
+
+    main_ids = {item['id'] for item in main_data if 'id' in item}
+    instruction_ids = {item['id'] for item in instruction_data if 'id' in item}
+    missing_in_ia = main_ids - instruction_ids
+    if missing_in_ia:
+        print(f"⚠️ Missing IDs in IA file: {sorted(list(missing_in_ia))}")
+    else:
+        print("✅ All IDs matched between files")
+
+    ia_map = {item['id']: item for item in instruction_data if 'id' in item}
+
+    pipeline = EmailEvaluationPipeline(model="x-ai/grok-4-fast")
+    encoder = SentenceTransformer("all-MiniLM-L6-v2")
+
+    results_list = []
+
+    for example in main_data:
+        example_id = example.get('id', 'Unknown')
+        print(f"\n{'=' * 80}\n📧 EVALUATING EXAMPLE {example_id}\n{'=' * 80}")
+
+        ia_info = ia_map.get(example_id, {})
+        merged_instructions = ia_info.get('instructions', example.get('instructions', ''))
+        print(f"🔍 Instruction found: {'✅' if merged_instructions else '❌'}")
+
+        # run pipeline (LLM for other dims)
+        result = pipeline.evaluate_email(
+            email=example['email'],
+            instructions=merged_instructions,
+            recipient_data=example.get('recipient_data', {}),
+            context=example.get('context', ''),
+            check_hallucination=False,
+            user_prompt=example.get('user_prompt', '')
+        )
+
+        # algorithmic IA replaces LLM IA
+        algo_ia_score = evaluate_instruction_adherence_fast(example['email'], merged_instructions, encoder)
+
+        results_list.append({
+            'example_id': example_id,
+            'overall_score': result.overall_score,
+            'acceptable': result.is_acceptable,
+            'cta_quality': result.cta_quality,
+            'language_quality': result.language_quality,
+            'relevance': result.relevance,
+            'human_likeness': result.human_likeness,
+            'instruction_adherence': algo_ia_score,
+            'cost_usd': result.total_cost
+        })
+
+    df = pd.DataFrame(results_list)
+
+    print("\n" + "=" * 80)
+    print("📊 EVALUATION RESULTS")
+    print("=" * 80)
+    print(tabulate(df, headers='keys', tablefmt='github', showindex=False))
+
+    avg_score = df['overall_score'].mean()
+    acceptable_count = df['acceptable'].sum()
+    print(f"\n📈 Average Overall Score: {round(avg_score, 2)}")
+    print(f"✅ Acceptable Emails: {acceptable_count}/{len(main_data)} ({acceptable_count/len(main_data)*100:.0f}%)")
+
+    return df
+
+
+if __name__ == "__main__":
+    print("\n🚀 Starting Dual-JSON Evaluation System...")
+
+    file_path_main = "/content/10_test_short.json"
+    file_path_instruction = "/content/10_test_long.json"
+
+    results_df = test_spreadsheet_examples(
+        file_path_main=file_path_main,
+        file_path_instruction=file_path_instruction
+    )
