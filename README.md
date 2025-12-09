@@ -28,21 +28,20 @@ Scores use a 1–5 scale and are aggregated into a final intrinsic score.
 ---
 ## 🧱 Project Structure
 
-project/
-│── JSON/
-│ └── input_emails.json
-│── CODE/
-│ ├── Prompt_Engineering
-│ │ ├── few_shot.ipynb
-│ │ ├── test_CoT.ipynb
-│ │ ├── test_One_Shot.ipynb
-│ ├── Test
-│ │ ├── Copy_of_email_system_version_2.ipynb
-│ │ ├── model_test_version.ipynb
-│ │ ├── score10_version.ipynb
-│ ├── email_evaluation_system.ipynb
-│── requirements.txt
-└── README.md
+project/   
+│── JSON/  
+│ └── input_emails.json  
+│── CODE/  
+│ ├── Prompt_Engineering  
+│ │ ├── few_shot.ipynb  
+│ │ ├── test_CoT.ipynb  
+│ │ ├── test_One_Shot.ipynb  
+│ ├── Test  
+│ │ ├── Copy_of_email_system_version_2.ipynb  
+│ │ ├── model_test_version.ipynb  
+│ │ ├── score10_version.ipynb  
+│ ├── email_evaluation_system.ipynb   
+└── README.md  
 
 
 
@@ -55,11 +54,6 @@ project/
 python3 -m venv venv
 source venv/bin/activate        # macOS / Linux
 venv\Scripts\activate           # Windows PowerShell
-```
-
-### **2️⃣ Install dependencies**
-```bash
-pip install -r requirements.txt
 ```
 Ensure your OpenAI / OpenRouter API key is configured:
 ```bash
@@ -74,29 +68,29 @@ Run the full evaluation pipeline:
 Project/CODE/email_evaluation_system.ipynb
 ```
 Additional output:
-✔ CSV result
-✔ Score distributions
-✔ Runtime cost summary
+✔ CSV result  
+✔ Score distributions  
+✔ Runtime cost summary  
 
 ## 🔍 System Overview
 
-Input Emails
-     |
-     v
-[Layer 1] Filtering
- - Hallucination check
- - Language score threshold
-     |
-     v
-[Layer 2] Multi-Dimensional Scoring
- - 4 intrinsic quality dimensions
- - Final intrinsic score
-     |
-     v
-[Layer 3] Bucket Aggregation
- - Top (>=4.0)
- - Medium (3.0<=4)
- - Low (<3.0)
-```
+Input Emails  
+     |  
+     v  
+[Layer 1] Filtering  
+ - Hallucination check  
+ - Language score threshold  
+     |  
+     v  
+[Layer 2] Multi-Dimensional Scoring  
+ - 4 intrinsic quality dimensions  
+ - Final intrinsic score  
+     |  
+     v  
+[Layer 3] Bucket Aggregation  
+ - Top (>=4.0)  
+ - Medium (3.0<=4)  
+ - Low (<3.0)  
+
 
 
