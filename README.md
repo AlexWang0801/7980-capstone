@@ -76,7 +76,7 @@ Additional output:
 ```mermaid
 flowchart TD
     A[[📨 Input<br/>AI-generated Emails]]
-    B[[🚫 Layer 1: Filtering & Qualification<br/>Hallucination Check + Language Threshold]]
+    B[[🚫 Layer 1: Filtering & Qualification<br/>Hallucination Check + Language Quality Threshold]]
     C[[🧠 Layer 2: Intrinsic Evaluation<br/>CTA · Personalization · Human-Likeness · Instruction Adherence]]
     D[[📊 Layer 3: Score Aggregation & Bucketing<br/>Top · Medium · Low]]
     E[[📁 Export Results<br/>JSON + CSV + Stats]]
