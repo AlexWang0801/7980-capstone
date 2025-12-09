@@ -12,7 +12,7 @@ This project evaluates AI-generated emails using a three-layer framework:
 ✔ Pre-filter low language quality or hallucinated content  
 ✔ Multi-dimensional scoring across 6 evaluation criteria  
 ✔ Tiered ranking and export for downstream decisions  
-✔ Low latency & low inference cost 
+✔ Low latency & low inference cost
 ✔ CSV result output for easy analysis
 
 **Evaluation Dimensions:**
