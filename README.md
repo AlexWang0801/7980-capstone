@@ -67,30 +67,10 @@ Run the full evaluation pipeline:
 ```bash
 Project/CODE/email_evaluation_system.ipynb
 ```
-Additional output:
+Additional output:  
 ✔ CSV result  
 ✔ Score distributions  
 ✔ Runtime cost summary  
-
-## 🔍 System Overview
-
-Input Emails  
-     |  
-     v  
-[Layer 1] Filtering  
- - Hallucination check  
- - Language score threshold  
-     |  
-     v  
-[Layer 2] Multi-Dimensional Scoring  
- - 4 intrinsic quality dimensions  
- - Final intrinsic score  
-     |  
-     v  
-[Layer 3] Bucket Aggregation  
- - Top (>=4.0)  
- - Medium (3.0<=4)  
- - Low (<3.0)  
 
 
 
