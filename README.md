@@ -12,7 +12,7 @@ This project evaluates AI-generated emails using a three-layer framework:
 ✔ Pre-filter low language quality or hallucinated content  
 ✔ Multi-dimensional scoring across 6 evaluation criteria  
 ✔ Tiered ranking and export for downstream decisions  
-✔ Low latency & low inference cost
+✔ Low latency & low inference cost   
 ✔ CSV result output for easy analysis
 
 **Evaluation Dimensions:**
@@ -26,24 +26,23 @@ This project evaluates AI-generated emails using a three-layer framework:
 Scores use a 1–5 scale and are aggregated into a final intrinsic score.
 
 ---
-
 ## 🧱 Project Structure
+
 project/
 │── JSON/
 │ └── input_emails.json
 │── CODE/
 │ ├── Prompt_Engineering
-│   ├── few_shot.ipynb
-│   ├── test_CoT.ipynb
-│   ├── test_One_Shot.ipynb
+│ │ ├── few_shot.ipynb
+│ │ ├── test_CoT.ipynb
+│ │ ├── test_One_Shot.ipynb
 │ ├── Test
-│   ├── Copy_of_email_system_version_2.ipynb
-│   ├── model_test_version.ipynb
-│   ├── score10_version.ipynb
+│ │ ├── Copy_of_email_system_version_2.ipynb
+│ │ ├── model_test_version.ipynb
+│ │ ├── score10_version.ipynb
 │ ├── email_evaluation_system.ipynb
 │── requirements.txt
 └── README.md
-****
 
 
 
