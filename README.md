@@ -40,9 +40,9 @@ project/
 │ │ ├── Copy_of_email_system_version_2.ipynb  
 │ │ ├── model_test_version.ipynb  
 │ │ ├── score10_version.ipynb  
-│ ├── email_evaluation_system.ipynb   
+│ ├── email_evaluation_system.ipynb  
+│── requirements.txt   
 └── README.md  
-
 
 
 ---
@@ -71,6 +71,25 @@ Additional output:
 ✔ CSV result  
 ✔ Score distributions  
 ✔ Runtime cost summary  
+
+## 📦 Required Imports
+In your Python code, you'll need the following imports:
+```bash
+import os
+import json
+import time
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Tuple, Optional
+from dataclasses import dataclass
+from sklearn.cluster import KMeans
+from sentence_transformers import SentenceTransformer
+import openai
+from anthropic import Anthropic
+from tabulate import tabulate
+from tenacity import retry, stop_after_attempt, wait_random_exponential
+```
+
 
 ## 🔍 System Overview
 ```mermaid
