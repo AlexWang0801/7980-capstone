@@ -1,0 +1,9 @@
+openai
+anthropic
+google-generativeai
+sentence-transformers
+scikit-learn
+pandas
+numpy
+tenacity
+tabulate
