@@ -54,8 +54,48 @@ project/
 python3 -m venv venv
 source venv/bin/activate        # macOS / Linux
 venv\Scripts\activate           # Windows PowerShell
-
+```
 
 ### **2️⃣ Install dependencies**
 ```bash
 pip install -r requirements.txt
+```
+Ensure your OpenAI / OpenRouter API key is configured:
+```bash
+export OPENAI_API_KEY="your_key_here"
+# or:
+export OPENROUTER_API_KEY="your_key_here"
+```
+
+## ▶️ Usage
+Run the full evaluation pipeline:
+```bash
+Project/CODE/email_evaluation_system.ipynb
+```
+Additional output:
+✔ CSV result
+✔ Score distributions
+✔ Runtime cost summary
+
+## 🔍 System Overview
+
+Input Emails
+     |
+     v
+[Layer 1] Filtering
+ - Hallucination check
+ - Language score threshold
+     |
+     v
+[Layer 2] Multi-Dimensional Scoring
+ - 4 intrinsic quality dimensions
+ - Final intrinsic score
+     |
+     v
+[Layer 3] Bucket Aggregation
+ - Top (>=4.0)
+ - Medium (3.0<=4)
+ - Low (<3.0)
+
+
+
