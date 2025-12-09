@@ -54,3 +54,27 @@ project/
 python3 -m venv venv
 source venv/bin/activate        # macOS / Linux
 venv\Scripts\activate           # Windows PowerShell
+
+
+2️⃣ Install dependencies
+pip install -r requirements.txt
+
+
+Ensure your OpenAI / OpenRouter API key is configured:
+
+export OPENAI_API_KEY="your_key_here"
+# or:
+export OPENROUTER_API_KEY="your_key_here"
+
+▶️ Usage
+
+Run the full evaluation pipeline:
+
+python src/main.py \
+    --input data/input_emails.json \
+    --output results/
+
+Arguments
+Parameter	Description
+--input	Path to input email dataset
+--output	Output directory for results
