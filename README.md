@@ -43,6 +43,7 @@ project/
 │ ├── email_evaluation_system.ipynb
 │── requirements.txt
 └── README.md
+```
 
 
 ---
@@ -96,6 +97,6 @@ Input Emails
  - Top (>=4.0)
  - Medium (3.0<=4)
  - Low (<3.0)
-
+```
 
 
