@@ -49,7 +49,7 @@ project/
 
 ## 🛠️ Setup
 
-### **1️⃣ Create environment (optional)**
+## 1️⃣ Create environment (optional)
 ```bash
 python3 -m venv venv
 source venv/bin/activate        # macOS / Linux
@@ -79,7 +79,7 @@ flowchart TD
     B[[🚫 Layer 1: Filtering & Qualification<br/>Hallucination Check + Language Quality Threshold]]
     C[[🧠 Layer 2: Intrinsic Evaluation<br/>CTA · Personalization · Human-Likeness · Instruction Adherence]]
     D[[📊 Layer 3: Score Aggregation & Bucketing<br/>Top · Medium · Low]]
-    E[[📁 Export Results<br/>JSON + CSV + Stats]]
+    E[[📁 Export Results<br/> CSV + Report]]
 
     A --> B --> C --> D --> E
 
